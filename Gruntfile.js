@@ -92,6 +92,9 @@ module.exports = function (grunt) {
             buildPackageReinit: {
                 files: 	[{'package.json': 'package-bak.json'}]
             },
+            buildServiceConfigFile: {
+              files: 	[{'build/js/service_config.json': 'scripts/core/service_config.json'}]
+            },
 
             keepPackage: {
               files: 	[{'build/package.json': 'package.json'}]
@@ -231,7 +234,7 @@ module.exports = function (grunt) {
     grunt.registerTask('build', function () {
         grunt.task.run(['clean:package', 'clean:build']);
 
-        grunt.task.run(['env:build','update_json:packageBuild', 'copy:buildPackageBak', 'copy:buildPackageReplace', 'npm-install', 'copy:keepPackage', 'copy:buildPackageReinit', 'typescript:build', 'clean:package']);
+        grunt.task.run(['env:build','update_json:packageBuild', 'copy:buildPackageBak', 'copy:buildPackageReplace', 'npm-install', 'copy:keepPackage', 'copy:buildPackageReinit', 'typescript:build', 'copy:buildServiceConfigFile', 'clean:package']);
     });
 
     grunt.registerTask('heroku', function () {
