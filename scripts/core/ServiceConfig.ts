@@ -4,9 +4,6 @@
 
 /// <reference path="../../t6s-core/core-backend/scripts/Logger.ts" />
 
-declare var require : any;
-declare var __dirname : any;
-
 var fs = require('fs');
 
 /**

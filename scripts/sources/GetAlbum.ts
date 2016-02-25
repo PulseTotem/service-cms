@@ -4,6 +4,8 @@
 
 /// <reference path="../../t6s-core/core-backend/scripts/Logger.ts" />
 /// <reference path="../../t6s-core/core-backend/scripts/server/SourceItf.ts" />
+/// <reference path="../../t6s-core/core-backend/scripts/RestClient.ts" />
+/// <reference path="../../t6s-core/core-backend/scripts/RestClientResponse.ts" />
 
 /// <reference path="../core/ServiceConfig.ts" />
 
