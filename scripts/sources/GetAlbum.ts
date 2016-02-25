@@ -56,33 +56,45 @@ class GetAlbum extends SourceItf {
 			pictureAlbum.setCreationDate(creationDate.toDate());
 
 
-			if(info.images.length > 0) {
-				info.images.forEach(function(image) {
-					var picture : Picture = new Picture();
-					picture.setId(image.id);
-					var pictureCreationDate : any = moment(image.createdAt);
-					picture.setCreationDate(pictureCreationDate.toDate());
-					picture.setDurationToDisplay(parseInt(self.getParams().InfoDuration));
+			var successRetrievePhotos = function(photosResult) {
+				var photos = photosResult.data();
 
-					picture.setTitle(image.name);
-					picture.setDescription(image.description);
+				if(photos.length > 0) {
+					photos.forEach(function(image) {
+						var picture : Picture = new Picture();
+						picture.setId(image.id);
+						var pictureCreationDate : any = moment(image.createdAt);
+						picture.setCreationDate(pictureCreationDate.toDate());
+						picture.setDurationToDisplay(parseInt(self.getParams().InfoDuration));
 
-					var pictureURL : PictureURL = new PictureURL();
-					pictureURL.setURL(ServiceConfig.getCMSHost() + "images/" + image.id + "/raw");
+						picture.setTitle(image.name);
+						picture.setDescription(image.description);
 
-					picture.setOriginal(pictureURL);
-					picture.setLarge(pictureURL);
+						var pictureURL : PictureURL = new PictureURL();
+						pictureURL.setURL(ServiceConfig.getCMSHost() + "images/" + image.id + "/raw");
 
-					pictureAlbum.addPicture(picture);
-				});
-			}
+						picture.setOriginal(pictureURL);
+						picture.setLarge(pictureURL);
 
-			pictureAlbum.setDurationToDisplay(parseInt(self.getParams().InfoDuration) * pictureAlbum.getPictures().length);
-			self.getSourceNamespaceManager().sendNewInfoToClient(pictureAlbum);
+						pictureAlbum.addPicture(picture);
+					});
+				}
+
+				pictureAlbum.setDurationToDisplay(parseInt(self.getParams().InfoDuration) * pictureAlbum.getPictures().length);
+				self.getSourceNamespaceManager().sendNewInfoToClient(pictureAlbum);
+			};
+
+			var retrievePhotosUrl = ServiceConfig.getCMSHost() + "admin/images_collections/" + self.getParams().AlbumId + "/images";
+
+			self.performGetRequest(retrievePhotosUrl, successRetrievePhotos, fail);
 		};
 
 		var retrieveAlbumUrl = ServiceConfig.getCMSHost() + "admin/images_collections/" + self.getParams().AlbumId;
 
+		this.performGetRequest(retrieveAlbumUrl, successRetrieveAlbum, fail);
+	}
+
+	performGetRequest(url, successCallback, failCallback) {
 		var RestClientSuccess : Function = function(data, response) {
 			var dataJSON;
 
@@ -92,12 +104,12 @@ class GetAlbum extends SourceItf {
 				dataJSON = data;
 			}
 			var result : RestClientResponse = new RestClientResponse(true, response, dataJSON);
-			successRetrieveAlbum(result);
+			successCallback(result);
 		};
 
 		var RestClientFail : Function = function(error) {
 			var result : RestClientResponse = new RestClientResponse(false, error);
-			fail(result);
+			failCallback(result);
 		};
 
 		var args = {
@@ -107,7 +119,7 @@ class GetAlbum extends SourceItf {
 			}
 		};
 
-		var req = RestClient.getClient().get(retrieveAlbumUrl, args, function(data, response) {
+		var req = RestClient.getClient().get(url, args, function(data, response) {
 			if(response.statusCode >= 200 && response.statusCode < 300) {
 				RestClientSuccess(data, response);
 			} else {
