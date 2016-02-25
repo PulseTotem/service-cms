@@ -33,7 +33,7 @@ class GetAlbum extends SourceItf {
 	constructor(params : any, cmsNamespaceManager : CMSNamespaceManager) {
 		super(params, cmsNamespaceManager);
 
-		if (this.checkParams(["Limit", "InfoDuration", "AlbumId"])) {
+		if (this.checkParams(["Limit", "InfoDuration", "AlbumID", "Shuffle"])) {
 			this.run();
 		}
 	}
@@ -60,6 +60,8 @@ class GetAlbum extends SourceItf {
 				var photos = photosResult.data();
 
 				if(photos.length > 0) {
+					var pictures : Array<Picture> = new Array<Picture>();
+
 					photos.forEach(function(image) {
 						var picture : Picture = new Picture();
 						picture.setId(image.id);
@@ -76,7 +78,31 @@ class GetAlbum extends SourceItf {
 						picture.setOriginal(pictureURL);
 						picture.setLarge(pictureURL);
 
-						pictureAlbum.addPicture(picture);
+						pictures.push(picture);
+					});
+
+					var finalPictures : Array<Picture> = new Array<Picture>();
+					if(pictures.length > parseInt(self.getParams().Limit)) {
+						var resultPictures : Array<Picture> ;
+						if(self.getParams().Shuffle) {
+							resultPictures = self.shuffle(pictures);
+						} else {
+							resultPictures = pictures;
+						}
+
+						for(var i = 0; i < parseInt(self.getParams().Limit); i++) {
+							finalPictures.push(resultPictures[i]);
+						}
+					} else {
+						if(self.getParams().Shuffle) {
+							finalPictures = self.shuffle(pictures);
+						} else {
+							finalPictures = pictures;
+						}
+					}
+
+					finalPictures.forEach(function(pic : Picture) {
+						pictureAlbum.addPicture(pic);
 					});
 				}
 
@@ -84,12 +110,12 @@ class GetAlbum extends SourceItf {
 				self.getSourceNamespaceManager().sendNewInfoToClient(pictureAlbum);
 			};
 
-			var retrievePhotosUrl = ServiceConfig.getCMSHost() + "admin/images_collections/" + self.getParams().AlbumId + "/images";
+			var retrievePhotosUrl = ServiceConfig.getCMSHost() + "admin/images_collections/" + self.getParams().AlbumID + "/images";
 
 			self.performGetRequest(retrievePhotosUrl, successRetrievePhotos, fail);
 		};
 
-		var retrieveAlbumUrl = ServiceConfig.getCMSHost() + "admin/images_collections/" + self.getParams().AlbumId;
+		var retrieveAlbumUrl = ServiceConfig.getCMSHost() + "admin/images_collections/" + self.getParams().AlbumID;
 
 		this.performGetRequest(retrieveAlbumUrl, successRetrieveAlbum, fail);
 	}
@@ -127,5 +153,21 @@ class GetAlbum extends SourceItf {
 			}
 		});
 		req.on('error', RestClientFail);
+	}
+
+	/**
+	 * Shuffles array in place.
+	 * @param {Array} a items The array containing the items.
+	 * @return {Array} a The shuffled array
+	 */
+	shuffle(a) {
+		var j, x, i;
+		for (i = a.length; i; i -= 1) {
+			j = Math.floor(Math.random() * i);
+			x = a[i - 1];
+			a[i - 1] = a[j];
+			a[j] = x;
+		}
+		return a;
 	}
 }
