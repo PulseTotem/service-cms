@@ -72,11 +72,20 @@ class GetAlbum extends SourceItf {
 						picture.setTitle(image.name);
 						picture.setDescription(image.description);
 
-						var pictureURL : PictureURL = new PictureURL();
-						pictureURL.setURL(ServiceConfig.getCMSHost() + "images/" + image.id + "/raw");
+						var pictureOriginalURL : PictureURL = new PictureURL();
+						pictureOriginalURL.setId(image.id + "_original");
+						pictureOriginalURL.setURL(ServiceConfig.getCMSHost() + "images/" + image.id + "/raw");
+						picture.setOriginal(pictureOriginalURL);
 
-						picture.setOriginal(pictureURL);
-						picture.setLarge(pictureURL);
+						var pictureLargeURL : PictureURL = new PictureURL();
+						pictureLargeURL.setId(image.id + "_large");
+						pictureLargeURL.setURL(ServiceConfig.getCMSHost() + "images/" + image.id + "/raw");
+						picture.setLarge(pictureLargeURL);
+
+						var pictureMediumURL : PictureURL = new PictureURL();
+						pictureMediumURL.setId(image.id + "_medium");
+						pictureMediumURL.setURL(ServiceConfig.getCMSHost() + "images/" + image.id + "/raw");
+						picture.setMedium(pictureMediumURL);
 
 						pictures.push(picture);
 					});
