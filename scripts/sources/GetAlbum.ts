@@ -74,18 +74,28 @@ class GetAlbum extends SourceItf {
 
 						var pictureOriginalURL : PictureURL = new PictureURL();
 						pictureOriginalURL.setId(image.id + "_original");
-						pictureOriginalURL.setURL(ServiceConfig.getCMSHost() + "images/" + image.id + "/raw");
+						pictureOriginalURL.setURL(ServiceConfig.getCMSHost() + "images/" + image.id + "/raw?size=original");
 						picture.setOriginal(pictureOriginalURL);
 
 						var pictureLargeURL : PictureURL = new PictureURL();
 						pictureLargeURL.setId(image.id + "_large");
-						pictureLargeURL.setURL(ServiceConfig.getCMSHost() + "images/" + image.id + "/raw");
+						pictureLargeURL.setURL(ServiceConfig.getCMSHost() + "images/" + image.id + "/raw?size=large");
 						picture.setLarge(pictureLargeURL);
 
 						var pictureMediumURL : PictureURL = new PictureURL();
 						pictureMediumURL.setId(image.id + "_medium");
-						pictureMediumURL.setURL(ServiceConfig.getCMSHost() + "images/" + image.id + "/raw");
+						pictureMediumURL.setURL(ServiceConfig.getCMSHost() + "images/" + image.id + "/raw?size=medium");
 						picture.setMedium(pictureMediumURL);
+
+						var pictureSmallURL : PictureURL = new PictureURL();
+						pictureSmallURL.setId(image.id + "_small");
+						pictureSmallURL.setURL(ServiceConfig.getCMSHost() + "images/" + image.id + "/raw?size=small");
+						picture.setSmall(pictureSmallURL);
+
+						var pictureThumbURL : PictureURL = new PictureURL();
+						pictureThumbURL.setId(image.id + "_thumb");
+						pictureThumbURL.setURL(ServiceConfig.getCMSHost() + "images/" + image.id + "/raw?size=thumb");
+						picture.setThumb(pictureThumbURL);
 
 						pictures.push(picture);
 					});
