@@ -8,6 +8,7 @@
 /// <reference path="../t6s-core/core-backend/scripts/server/SourceNamespaceManager.ts" />
 
 /// <reference path="./sources/GetAlbum.ts" />
+/// <reference path="./sources/GetNewsFeed.ts" />
 
 class CMSNamespaceManager extends SourceNamespaceManager {
 
@@ -20,5 +21,6 @@ class CMSNamespaceManager extends SourceNamespaceManager {
 	constructor(socket : any) {
 		super(socket);
 		this.addListenerToSocket('GetAlbum', function (params, self) { new GetAlbum(params, self); });
+		this.addListenerToSocket('GetNewsFeed', function (params, self) { new GetNewsFeed(params, self); });
 	}
 }
