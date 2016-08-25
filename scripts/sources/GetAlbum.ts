@@ -53,9 +53,9 @@ class GetAlbum extends SourceItf {
 
 			var pictureAlbum : PictureAlbum = new PictureAlbum();
 			pictureAlbum.setId(info.id);
+			pictureAlbum.setName(info.name);
 			var creationDate : any = moment(info.createdAt);
 			pictureAlbum.setCreationDate(creationDate.toDate());
-
 
 			var successRetrievePhotos = function(photosResult) {
 				var photos = photosResult.data();
